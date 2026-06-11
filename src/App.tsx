@@ -1,9 +1,18 @@
-import { useState } from 'react';
+import { useState, useDeferredValue, useMemo } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import './App.css';
 
 function App() {
   const [text, setText] = useState('https://reactjs.org/');
+  const deferredText = useDeferredValue(text);
+
+  const qrCode = useMemo(() => {
+    return deferredText ? (
+      <QRCodeSVG value={deferredText} size={256} />
+    ) : (
+      <p>Please enter some text</p>
+    );
+  }, [deferredText]);
 
   return (
     <div className="App">
@@ -17,11 +26,7 @@ function App() {
         />
       </div>
       <div className="qr-container">
-        {text ? (
-          <QRCodeSVG value={text} size={256} />
-        ) : (
-          <p>Please enter some text</p>
-        )}
+        {qrCode}
       </div>
     </div>
   );
